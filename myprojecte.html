@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Final</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Video Area */
+        .video-container {
+            width: 90%;
+            max-width: 600px;
+            background: #111;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #333;
+        }
+        video { width: 100%; display: block; }
+
+        /* Wishes - Right below Video */
+        #wishes-area {
+            margin: 25px 0;
+            height: 50px;
+            text-align: center;
+        }
+        .wish-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700; /* Gold */
+            display: none; /* Hidden at first */
+            animation: fadeIn 1s forwards;
+        }
+
+        /* Button that changes */
+        .btn-box { z-index: 100; }
+        #surprise-btn {
+            background: #ffd700;
+            color: #000;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255,215,0,0.4);
+        }
+        #surprise-btn.clicked {
+            background: #333;
+            color: #777;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        /* Emoji Rain */
+        .emoji {
+            position: fixed;
+            top: -100px;
+            font-size: 2.5rem;
+            z-index: 999;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-container">
+        <video id="v" playsinline>
+            <source src="video.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div id="wishes-area">
+        <div id="t" class="wish-text">✨ HAVE A MAGICAL DAY! ✨</div>
+    </div>
+
+    <div class="btn-box">
+        <button id="surprise-btn" onclick="go()">TAP FOR SURPRISE</button>
+    </div>
+
+    <audio id="s" src="sound.mp3"></audio>
+
+    <script>
+        function go() {
+            const btn = document.getElementById('surprise-btn');
+            const video = document.getElementById('v');
+            const sound = document.getElementById('s');
+            const text = document.getElementById('t');
+
+            // 1. Change the button immediately
+            btn.innerHTML = "ENJOY THE MAGIC!";
+            btn.classList.add('clicked');
+            btn.disabled = true;
+
+            // 2. Show the wishes
+            text.style.display = "block";
+
+            // 3. Play Media (Handle mobile blocks)
+            video.play().catch(e => console.log("Video Play Blocked"));
+            sound.play().catch(e => console.log("Sound Play Blocked"));
+
+            // 4. Heavy Emoji Rain
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const e = document.createElement('div');
+                    e.className = 'emoji';
+                    const list = ['🔥','✨','🎉','🎁','❤️','⭐','🎈'];
+                    e.innerHTML = list[Math.floor(Math.random() * list.length)];
+                    e.style.left = Math.random() * 100 + "vw";
+                    e.style.animationDuration = (Math.random() * 2 + 1) + "s";
+                    document.body.appendChild(e);
+                    setTimeout(() => e.remove(), 3000);
+                }, i * 30);
+            }
+        }
+    </script>
+</body>
+</html>
