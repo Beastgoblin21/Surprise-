@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Special Surprise</title>
+    <title>A Special Surprise</title>
     <style>
+        /* 1. Overall Page Look */
         body {
             margin: 0;
             background: #000;
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -18,54 +19,81 @@
             overflow: hidden;
         }
 
+        /* 2. Video Styling */
         .video-container {
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             background: #111;
-            border-radius: 20px;
+            border-radius: 25px;
             border: 2px solid #333;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            transition: opacity 1s ease;
         }
 
         video { width: 100%; display: block; }
 
+        /* 3. Wishes Text Styling */
         #wishes-area {
-            margin: 30px 0;
+            margin: 25px 0;
             min-height: 80px;
             text-align: center;
             z-index: 10;
         }
 
         .wish-text {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: bold;
             color: #ffd700;
             display: none;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            animation: fadeIn 1s ease forwards;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            animation: fadeIn 0.8s ease forwards;
         }
 
+        /* 4. The Surprise Button */
         #surprise-btn {
             background: #ffd700;
             color: #000;
-            padding: 20px 50px;
-            font-size: 1.3rem;
+            padding: 18px 45px;
+            font-size: 1.2rem;
             font-weight: 900;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255,215,0,0.4);
-            transition: transform 0.2s;
+            box-shadow: 0 8px 20px rgba(255,215,0,0.3);
             z-index: 100;
         }
 
-        #surprise-btn:active { transform: scale(0.9); }
+        /* 5. The Final Heart Message */
+        #final-note {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: #ff4d4d;
+            display: none;
+            text-align: center;
+            z-index: 200;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* 6. Animations */
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .emoji {
             position: fixed;
             top: -100px;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             z-index: 50;
             pointer-events: none;
             animation: fall linear forwards;
@@ -75,16 +103,13 @@
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
 
-    <div class="video-container">
+    <div id="final-note">❤️<br><span style="font-size: 1.5rem; color: white;">Thank You</span></div>
+
+    <div class="video-container" id="vCont">
         <video id="mainVideo" playsinline>
             <source src="Sh.mp4" type="video/mp4">
         </video>
@@ -101,20 +126,27 @@
             const btn = document.getElementById('surprise-btn');
             const video = document.getElementById('mainVideo');
             const wish = document.getElementById('textTarget');
+            const container = document.getElementById('vCont');
+            const finalNote = document.getElementById('final-note');
 
-            // 1. Reveal Wishes & Hide Button
-            wish.style.display = "block";
+            // Hide button and show wishes
             btn.style.display = "none";
+            wish.style.display = "block";
 
-            // 2. Play Video with Sound
-            // Browsers allow sound ONLY if it starts inside a click function
+            // Play video with sound
             video.muted = false;
-            video.volume = 1.0;
-            video.play().catch(e => console.log("Play blocked:", e));
+            video.play();
 
-            // 3. High-Density Emoji Rain
-            const emojis = ['🎈', '🎉', '🎊', '✨', '💖', '⭐', '🎂', '🔥'];
-            for (let i = 0; i < 80; i++) {
+            // NEW: Detect when video ends
+            video.onended = function() {
+                container.style.opacity = "0.2"; // Fade video
+                wish.style.display = "none";      // Hide wishes
+                finalNote.style.display = "block"; // Show the pulsing heart
+            };
+
+            // Emoji Rain Logic
+            const emojis = ['🎈', '🎉', '💖', '✨', '🎁', '⭐'];
+            for (let i = 0; i < 70; i++) {
                 setTimeout(() => {
                     const e = document.createElement('div');
                     e.className = 'emoji';
@@ -122,10 +154,8 @@
                     e.style.left = Math.random() * 100 + "vw";
                     e.style.animationDuration = (Math.random() * 2 + 1.5) + "s";
                     document.body.appendChild(e);
-                    
-                    // Cleanup to save memory
                     setTimeout(() => e.remove(), 4000);
-                }, i * 40);
+                }, i * 50);
             }
         }
     </script>
