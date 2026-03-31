@@ -15,36 +15,29 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
         }
-
-        /* Video Area */
         .video-container {
             width: 90%;
-            max-width: 600px;
+            max-width: 500px;
             background: #111;
             border-radius: 15px;
-            overflow: hidden;
             border: 2px solid #333;
+            overflow: hidden;
         }
         video { width: 100%; display: block; }
-
-        /* Wishes - Right below Video */
         #wishes-area {
-            margin: 25px 0;
-            height: 160px;
+            margin: 20px 0;
+            min-height: 60px;
             text-align: center;
         }
         .wish-text {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            color: #ffd700; /* Gold */
-            display: none; /* Hidden at first */
-            animation: fadeIn 1s forwards;
+            color: #ffd700;
+            display: none;
+            padding: 0 10px;
         }
-
-        /* Button that changes */
-        .btn-box { z-index: 100; }
         #surprise-btn {
             background: #ffd700;
             color: #000;
@@ -54,73 +47,46 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255,215,0,0.4);
+            box-shadow: 0 5px 15px rgba(255,215,0,0.3);
         }
-        #surprise-btn.clicked {
-            background: #333;
-            color: #777;
-            box-shadow: none;
-            cursor: default;
-        }
-
-        /* Emoji Rain */
         .emoji {
             position: fixed;
             top: -100px;
-            font-size: 2.5rem;
+            font-size: 2rem;
             z-index: 999;
             pointer-events: none;
-            animation: fall linear forwards;
+            animation: fall 3s linear forwards;
         }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div class="video-container">
-        <video id="v" playsinline>
+        <video id="v" playsinline muted loop>
             <source src="Sh.mp4" type="video/mp4">
         </video>
     </div>
 
     <div id="wishes-area">
-        <div id="t" class="wish-text">✨ Happy Birthday to You, God bless you and Take care of yourself SH? ✨</div>
+        <div id="t" class="wish-text">✨ HAVE A MAGICAL DAY! ✨</div>
     </div>
 
-    <div class="btn-box">
-        <button id="surprise-btn" onclick="go()">TAP FOR SURPRISE</button>
-    </div>
-
-    <audio id="s" src="sound.mp3"></audio>
+    <button id="surprise-btn" onclick="go()">TAP FOR SURPRISE</button>
 
     <script>
         function go() {
             const btn = document.getElementById('surprise-btn');
             const video = document.getElementById('v');
-            const sound = document.getElementById('s');
             const text = document.getElementById('t');
 
-            // 1. Change the button immediately
-            btn.innerHTML = "ENJOY THE MAGIC!";
-            btn.classList.add('clicked');
-            btn.disabled = true;
-
-            // 2. Show the wishes
+            // Start Video and Text
+            video.play();
             text.style.display = "block";
+            btn.style.display = "none"; // Hide button after click
 
-            // 3. Play Media (Handle mobile blocks)
-            video.play().catch(e => console.log("Video Play Blocked"));
-            sound.play().catch(e => console.log("Sound Play Blocked"));
-
-            // 4. Heavy Emoji Rain
-            for (let i = 0; i < 100; i++) {
+            // Emoji Rain
+            for (let i = 0; i < 60; i++) {
                 setTimeout(() => {
                     const e = document.createElement('div');
                     e.className = 'emoji';
@@ -130,7 +96,7 @@
                     e.style.animationDuration = (Math.random() * 2 + 1) + "s";
                     document.body.appendChild(e);
                     setTimeout(() => e.remove(), 3000);
-                }, i * 30);
+                }, i * 50);
             }
         }
     </script>
