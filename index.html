@@ -3,100 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surprise Final</title>
+    <title>Special Surprise</title>
     <style>
         body {
             margin: 0;
             background: #000;
             color: white;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
         }
+
         .video-container {
             width: 90%;
             max-width: 500px;
             background: #111;
-            border-radius: 15px;
+            border-radius: 20px;
             border: 2px solid #333;
             overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
+
         video { width: 100%; display: block; }
+
         #wishes-area {
-            margin: 20px 0;
-            min-height: 60px;
+            margin: 30px 0;
+            min-height: 80px;
             text-align: center;
+            z-index: 10;
         }
+
         .wish-text {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: bold;
             color: #ffd700;
             display: none;
-            padding: 0 10px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            animation: fadeIn 1s ease forwards;
         }
+
         #surprise-btn {
             background: #ffd700;
             color: #000;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            padding: 20px 50px;
+            font-size: 1.3rem;
+            font-weight: 900;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255,215,0,0.3);
+            box-shadow: 0 10px 25px rgba(255,215,0,0.4);
+            transition: transform 0.2s;
+            z-index: 100;
         }
+
+        #surprise-btn:active { transform: scale(0.9); }
+
         .emoji {
             position: fixed;
             top: -100px;
-            font-size: 2rem;
-            z-index: 999;
+            font-size: 2.5rem;
+            z-index: 50;
             pointer-events: none;
-            animation: fall 3s linear forwards;
+            animation: fall linear forwards;
         }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
     <div class="video-container">
-        <video id="v" playsinline muted loop>
+        <video id="mainVideo" playsinline>
             <source src="Sh.mp4" type="video/mp4">
         </video>
     </div>
 
     <div id="wishes-area">
-        <div id="t" class="wish-text">✨ HAVE A MAGICAL DAY! ✨</div>
+        <div id="textTarget" class="wish-text">✨ BEST WISHES FOR YOU! ✨</div>
     </div>
 
-    <button id="surprise-btn" onclick="go()">TAP FOR SURPRISE</button>
+    <button id="surprise-btn" onclick="startExperience()">TAP FOR SURPRISE 🎁</button>
 
     <script>
-        function go() {
+        function startExperience() {
             const btn = document.getElementById('surprise-btn');
-            const video = document.getElementById('v');
-            const text = document.getElementById('t');
+            const video = document.getElementById('mainVideo');
+            const wish = document.getElementById('textTarget');
 
-            // Start Video and Text
-            video.play();
-            text.style.display = "block";
-            btn.style.display = "none"; // Hide button after click
+            // 1. Reveal Wishes & Hide Button
+            wish.style.display = "block";
+            btn.style.display = "none";
 
-            // Emoji Rain
-            for (let i = 0; i < 60; i++) {
+            // 2. Play Video with Sound
+            // Browsers allow sound ONLY if it starts inside a click function
+            video.muted = false;
+            video.volume = 1.0;
+            video.play().catch(e => console.log("Play blocked:", e));
+
+            // 3. High-Density Emoji Rain
+            const emojis = ['🎈', '🎉', '🎊', '✨', '💖', '⭐', '🎂', '🔥'];
+            for (let i = 0; i < 80; i++) {
                 setTimeout(() => {
                     const e = document.createElement('div');
                     e.className = 'emoji';
-                    const list = ['🔥','✨','🎉','🎁','❤️','⭐','🎈'];
-                    e.innerHTML = list[Math.floor(Math.random() * list.length)];
+                    e.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
                     e.style.left = Math.random() * 100 + "vw";
-                    e.style.animationDuration = (Math.random() * 2 + 1) + "s";
+                    e.style.animationDuration = (Math.random() * 2 + 1.5) + "s";
                     document.body.appendChild(e);
-                    setTimeout(() => e.remove(), 3000);
-                }, i * 50);
+                    
+                    // Cleanup to save memory
+                    setTimeout(() => e.remove(), 4000);
+                }, i * 40);
             }
         }
     </script>
